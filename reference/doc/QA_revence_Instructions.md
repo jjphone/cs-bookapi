@@ -2,7 +2,7 @@ Instructions
 
 · Please review the task below and prepare a response
 
-· Please send a copy of your response to Neha Bajaj via Neha.Bajaj@customerservice.nsw.gov.au by 8pm Tuesday 22ndth September.
+· Please send a copy of your response by 8pm Tuesday 22ndth September.
 
 · During the interview you will be requested to demonstrate and explain your response (up to 15min).
 
