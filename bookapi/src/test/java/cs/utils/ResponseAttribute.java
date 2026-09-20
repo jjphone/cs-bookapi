@@ -9,19 +9,34 @@ import java.util.HashMap;
 public class ResponseAttribute {
 
     public static String getAttributeText(String name, Response response) {
+        String result = null;
         switch (name) {
             case "status":
-                return Integer.toString(response.getStatusCode());
+            case "status code":
+                result = Integer.toString(response.getStatusCode());
+                break;
+            
             case "time":
+            case "date":
+                
                 ZonedDateTime responseDate = ZonedDateTime.parse(response.getHeader("Date"), DateTimeFormatter.RFC_1123_DATE_TIME);
-                return responseDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                result = responseDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                break;
+
             case "type":
-                return response.getHeader("Content-Type");
+            case "content-type":
+                result = response.getHeader("Content-Type");
+                break;
+
             case "size":
-                return response.getHeader("Content-Length");
+            case "content-length":
+                result = response.getHeader("Content-Length");
+                break;
+
             default:
                 throw new IllegalArgumentException("Unknown attribute name: " + name);
         }
+        return result;
     }
 
 

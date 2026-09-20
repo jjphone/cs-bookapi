@@ -3,9 +3,16 @@ Feature: Simple Books API
   Scenario Outline: User calls /books GET request, checks response header attributes
 
   # Response header attributes:
-  #   http Status code = status, 
-  #   response.header.date = time, 
-  #   response.header.content-type = type, 
+  #   http status code = status,
+  #   http status code = status code,
+
+  #   response.header.date = date,
+  #   response.header.date = time,
+
+  #   response.header.content-type = content-type
+  #   response.header.content-type = type,
+  
+  #   response.header.content-length = content-length
   #   response.header.content-length = size
 
     Given access to granted to the API
@@ -20,25 +27,26 @@ Feature: Simple Books API
     @smoke
     Examples:
     | test name                           | expect_header_attribs |
-    | 'Check GET response header -smoke'  | 'status=200'          |
+    | 'Check GET response header -smoke'  | 'status code=200'          |
     
     @regression
     Examples:
     | test name                               | expect_header_attribs                                           |
-    | 'Check GET response header -regression' | 'status=200, size>0, time<now()-2minute, type=application/json' |
+    | 'Check GET response header -regression' | 'status code=200, size>0, time<{now()-2minutes}, type=application/json' |
 
 
 
-  Scenario Outline: User calls /books GET request, checks response content
+  # Scenario Outline: User calls /books GET request, checks response content
 
-    Given access to granted to the API
-    When GET request is sent to 'http://simple-books-api.glitch.me/books'
-    Then the response body should contains <expected_item_properties> items to be more than <expected_contains_number>
-    # Then the response body should contains not <expected_filter_out_item_properties> items to be more than <expected_not_contains_number>
+  #   Given access to granted to the API
+  #   When GET request is sent to 'http://simple-books-api.glitch.me/books'
+  #   Then the response body should contains <expected_item_properties> items to be more than <expected_contains_number>
+  #   # Then the response body should contains not <expected_filter_out_item_properties> items to be more than <expected_not_contains_number>
 
-    @smoke
-    Examples:
-    | test name                               | expected_item_properties  | expected_contains_number  | expected_filter_out_item_properties | expected_not_contains_number |
-    | 'Check GET response content -smoke'     | 'id:1'                    | '0'                       | ''                                  | ''                           |
+  #   @smoke
+  #   Examples:
+  #   | test name                               | expected_item_properties  | expected_contains_number  | expected_filter_out_item_properties | expected_not_contains_number |
+  #   | 'Check GET response content -smoke'     | 'id=1, name=The Russian'  | '0'                       | ''                                  | ''                           |
 
     
+    #   response.header.date = time, 

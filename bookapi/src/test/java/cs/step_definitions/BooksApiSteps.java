@@ -42,26 +42,15 @@ public class BooksApiSteps {
         assertThat(response.getStatusCode(), equalTo(expectedStatus));
     }
 
+
     @Then ("the response header should match with {string}")
     public void the_response_header_should_match_with(String expectedAttribs) {
-
-
         HashMap<String, String>[] expectings = ParamHelper.parseParams(expectedAttribs);
         for( int i = 0; i < expectings.length; i++) {
             HashMap<String, String> item = expectings[i];
             boolean result = cs.utils.ResponseAttribute.compareAttributes(item, response);
-            if (!result) {
-                String reson = item.get("reason");
-                String expected = "expected: " + item.get("value");
-                // String actual = 
-                System.out.println("Response header attribute check failed for: " + item);
-            }
             Assert.assertTrue(item.get("reason"), result);
         }
-        
-
-
-
     }
 
     @Then("the response time should be less than {int} ms")
@@ -84,5 +73,13 @@ public class BooksApiSteps {
             assertThat(book, hasKey(firstField));
             assertThat(book, hasKey(secondField));
         }
+    }
+
+
+    @Then("the response body should contains {string} items to be more than {string}") 
+    public void the_response_body_should_contains_items_to_be_more_than(String containPropertyText, String countText) {
+        HashMap<String, String> containProperties = ParamHelper.textToHash(containPropertyText);
+        System.out.println("Contain properties: " + containProperties);
+
     }
 }

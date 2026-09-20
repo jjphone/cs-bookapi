@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 public class ParamHelper {
 
     // part 1: letters only (field name), part 2: special chars (operator), part 3: numbers or letters mixed with numbers/special chars (value)
-    private static final Pattern PARAM_PATTERN = Pattern.compile("^([A-Za-z]+)\\s*([=!<>]+)\\s*(.+)$");
+    private static final Pattern PARAM_PATTERN = Pattern.compile("^([A-Za-z -]+)\\s*([=!<>]+)\\s*(.+)$");
 
     public static String[] textToList(String paramName) {
         final String DELIM = ",";
@@ -23,9 +23,9 @@ public class ParamHelper {
 
 
     // convert dataText to dynamic data text in ISO_LOCAL_DATE_TIME
-    // the date text can be in the following formats: now()-1day, now()-1hour, now()-1minute or just 2026-01-01 01:15:00
+    // the date text can be in the following formats: {now()-1day}, {now()-1hour}, {now()-1minute} or just 2026-01-01 01:15:00
     private static String calculateDateValue(String dateText){
-        if (!dateText.startsWith("now()")) 
+        if (!dateText.contains("now()")) 
             return dateText;
 
         //dataText should be in now(), or now()-1day or now()+1hour format.
@@ -37,7 +37,7 @@ public class ParamHelper {
             return now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
         int amount = Integer.parseInt(dateText.replaceAll("[^\\d]", ""));
-        
+        parts[1] = parts[1].substring(0, parts[1].length() - 1); // remove the last character of '}'  
         switch (parts[1]) {
 
             case "day":
@@ -54,7 +54,7 @@ public class ParamHelper {
                 break;
             default:
                 throw new IllegalArgumentException("Invalid date format: " + dateText);
-        }        
+        }
         return res.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
@@ -71,7 +71,7 @@ public class ParamHelper {
             }
 
             HashMap<String, String> item = new HashMap<String, String>();
-            item.put("field", matcher.group(1));
+            item.put("field", matcher.group(1).toLowerCase().trim());
             item.put("operator", matcher.group(2));
             
 
@@ -87,6 +87,23 @@ public class ParamHelper {
         }
         return parsedParams;
     }
+
+    public static HashMap<String, String> textToHash(String text) {
+        // Convert the text to a HashMap object
+        HashMap<String, String> hashMap = new HashMap<>();
+        String[] params = textToList(text);
+
+        for (String param : params) {
+            String[] keyValue = param.split("=", 2);
+            if (keyValue.length == 2) {
+                hashMap.put(keyValue[0].trim(), keyValue[1].trim());
+            } else {
+                throw new IllegalArgumentException("Invalid parameter format: " + param);
+            }
+        }
+        return hashMap; 
+    }
+
 
 
 
