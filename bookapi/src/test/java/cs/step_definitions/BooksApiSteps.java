@@ -6,10 +6,13 @@ import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.junit.Assert;
+
+import cs.utils.ParamHelper;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -29,7 +32,7 @@ public class BooksApiSteps {
         RestAssured.baseURI = "http://simple-books-api.glitch.me";
     }
 
-    @When("^a GET request is sent to '(.+)'$")
+    @When("^GET request is sent to '(.+)'$")
     public void a_get_request_is_sent_to(String url) {
         response = RestAssured.get(url);
     }
@@ -37,6 +40,28 @@ public class BooksApiSteps {
     @Then("the response status code should be {int}")
     public void the_response_status_code_should_be(int expectedStatus) {
         assertThat(response.getStatusCode(), equalTo(expectedStatus));
+    }
+
+    @Then ("the response header should match with {string}")
+    public void the_response_header_should_match_with(String expectedAttribs) {
+
+
+        HashMap<String, String>[] expectings = ParamHelper.parseParams(expectedAttribs);
+        for( int i = 0; i < expectings.length; i++) {
+            HashMap<String, String> item = expectings[i];
+            boolean result = cs.utils.ResponseAttribute.compareAttributes(item, response);
+            if (!result) {
+                String reson = item.get("reason");
+                String expected = "expected: " + item.get("value");
+                // String actual = 
+                System.out.println("Response header attribute check failed for: " + item);
+            }
+            Assert.assertTrue(item.get("reason"), result);
+        }
+        
+
+
+
     }
 
     @Then("the response time should be less than {int} ms")
