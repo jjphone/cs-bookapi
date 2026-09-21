@@ -17,8 +17,10 @@ public class ResponseAttribute {
                 break;
             
             case "time":
+                result = Long.toString(response.getTimeIn(java.util.concurrent.TimeUnit.MILLISECONDS));
+                break;
+
             case "date":
-                
                 ZonedDateTime responseDate = ZonedDateTime.parse(response.getHeader("Date"), DateTimeFormatter.RFC_1123_DATE_TIME);
                 result = responseDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 break;

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import io.restassured.path.json.JsonPath;
@@ -37,7 +38,7 @@ public class ParamHelper {
         //dataText should be in now(), or now()-1day or now()+1hour format.
         String[] parts = dateText.split("\\d+");
         
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         ZonedDateTime res;
         if (parts.length < 2) { // only now() is present, return current date in ISO_LOCAL_DATE format
             return now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -81,7 +82,7 @@ public class ParamHelper {
             item.put("operator", matcher.group(2));
             
 
-            if ( item.get("field").equals("time") ) {
+            if ( item.get("field").equals("date") ) {
                 item.put("value", calculateDateValue(matcher.group(3)));
             }else {
                 item.put("value", matcher.group(3));
@@ -110,32 +111,33 @@ public class ParamHelper {
         return hashMap; 
     }
 
-    public static boolean matchesContainProperties(HashMap<String, String> item, HashMap<String, String> containProperties) {
+    public static boolean matchesContainProperties(HashMap<String, Object> item, HashMap<String, String> containProperties) {
         final String NOT_EMPTY_PLACEHOLDER = "{notEmpty}";
         final String EMPTY_PLACEHOLDER = "{empty}";
         final String STARTS_BRACKET_PLACEHOLDER = "{";
         final String ENDS_BRACKET_PLACEHOLDER = "}";
 
         for (Map.Entry<String, String> entry : containProperties.entrySet()) {
-            
+
             String expectedValue = entry.getValue().trim();
-            Object actualValue = item.get(entry.getKey());
+            Object rawValue = item.get(entry.getKey());
+            String actualValue = rawValue == null ? null : rawValue.toString().trim();
 
             // expected: isempty  - return false when actualValue is not empty
-            if(expectedValue.equals(EMPTY_PLACEHOLDER) ){ 
-                if (actualValue!=null && !actualValue.toString().isEmpty()) 
+            if(expectedValue.equals(EMPTY_PLACEHOLDER) ){
+                if (actualValue!=null && !actualValue.isEmpty())
                     return false;
             }
 
             // expected: not empty - return false when actual value is null or empty, actual value does not matter
-            if(expectedValue.equals(NOT_EMPTY_PLACEHOLDER) ){ 
-                if (actualValue==null || actualValue.toString().isEmpty()) 
+            if(expectedValue.equals(NOT_EMPTY_PLACEHOLDER) ){
+                if (actualValue==null || actualValue.isEmpty())
                     return false;
             }
 
             // perform actual value comparison
-            if( !(expectedValue.startsWith(STARTS_BRACKET_PLACEHOLDER) && expectedValue.endsWith(ENDS_BRACKET_PLACEHOLDER)) ) { 
-                if (actualValue == null || !actualValue.toString().equals(expectedValue)) {
+            if( !(expectedValue.startsWith(STARTS_BRACKET_PLACEHOLDER) && expectedValue.endsWith(ENDS_BRACKET_PLACEHOLDER)) ) {
+                if (actualValue == null || !actualValue.equals(expectedValue)) {
                     return false;
                 }
             }
@@ -146,7 +148,7 @@ public class ParamHelper {
 
 
 
-    public static boolean matchesNotContainProperties(HashMap<String, String> item, HashMap<String, String> containProperties) {
+    public static boolean matchesNotContainProperties(HashMap<String, Object> item, HashMap<String, String> containProperties) {
         final String NOT_EMPTY_PLACEHOLDER = "{notEmpty}";
         final String EMPTY_PLACEHOLDER = "{empty}";
         final String STARTS_BRACKET_PLACEHOLDER = "{";
@@ -181,19 +183,19 @@ public class ParamHelper {
     }
 
 
-    public static List<HashMap<String, String>> filterResponseJson(Response response, String filterText, boolean filterMatched) {
+    public static List<HashMap<String, Object>> filterResponseJson(Response response, String filterText, boolean filterMatched) {
         HashMap<String, String> containProperties = ParamHelper.textToHash(filterText);
         JsonPath responseJson = response.jsonPath();
-        
+
         //extract hashmap of response json
-        List<Map<String, String>> books = responseJson.getList("$");
-        List<HashMap<String, String>> items = new ArrayList<>();
-        for (Map<String, String> book : books) {
+        List<Map<String, Object>> books = responseJson.getList("$");
+        List<HashMap<String, Object>> items = new ArrayList<>();
+        for (Map<String, Object> book : books) {
             items.add(new HashMap<>(book));
         }
 
-        List<HashMap<String, String>> matchedItems = new ArrayList<>();
-        for (HashMap<String, String> item : items) {
+        List<HashMap<String, Object>> matchedItems = new ArrayList<>();
+        for (HashMap<String, Object> item : items) {
             boolean isMatched = filterMatched ?  matchesContainProperties(item, containProperties) : matchesNotContainProperties(item, containProperties);
             if (isMatched)
                 matchedItems.add(item);

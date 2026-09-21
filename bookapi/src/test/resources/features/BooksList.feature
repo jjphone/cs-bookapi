@@ -6,8 +6,9 @@ Feature: Simple Books API
   #   - http status code = status,
   #   - http status code = status code,
 
+  #   - response.time = time,
+
   #   - response.header.date = date,
-  #   - response.header.date = time,
 
   #   - response.header.content-type = content-type
   #   - response.header.content-type = type,
@@ -19,20 +20,18 @@ Feature: Simple Books API
     When GET request is sent to 'http://simple-books-api.glitch.me/books'
     
     Then the response header should match with <expect_header_attribs>
-
-    
     And the response body should not be empty
     And each book in the response should have an "id" and a "name"
 
     @smoke
     Examples:
-    | test name                           | expect_header_attribs |
-    | 'Check GET response header -smoke'  | 'status code=200'          |
+    | test name                                 | expect_header_attribs |
+    | 'Check GET response header has status 200'| 'status code=200'          |
     
     @regression
     Examples:
-    | test name                               | expect_header_attribs                                           |
-    | 'Check GET response header -regression' | 'status code=200, size>0, time<{now()-2minutes}, type=application/json' |
+    | test name                                       | expect_header_attribs                                                             |
+    | 'Check GET response header with all attributes' | 'status code=200, size>0, time<2000, date>{now()-2minutes}, type=application/json' |
 
 
 

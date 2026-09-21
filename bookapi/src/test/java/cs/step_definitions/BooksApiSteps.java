@@ -91,7 +91,7 @@ public class BooksApiSteps {
         }
         int expectedCount = Integer.parseInt(countText); //expected count number
 
-        List<HashMap<String, String>> matchedItems = ParamHelper.filterResponseJson(response, containPropertyText, MATCH_TO_CONTAIN_PROPERTIES);
+        List<HashMap<String, Object>> matchedItems = ParamHelper.filterResponseJson(response, containPropertyText, MATCH_TO_CONTAIN_PROPERTIES);
         assertThat(matchedItems.size(), greaterThan(expectedCount));
     }
 
@@ -108,7 +108,7 @@ public class BooksApiSteps {
         }
         int expectedCount = Integer.parseInt(countText); //expected count number
 
-        List<HashMap<String, String>> matchedItems = ParamHelper.filterResponseJson(response, notContainPropertyText, MATCH_TO_NOT_CONTAIN_PROPERTIES);
+        List<HashMap<String, Object>> matchedItems = ParamHelper.filterResponseJson(response, notContainPropertyText, MATCH_TO_NOT_CONTAIN_PROPERTIES);
         assertThat(matchedItems.size(), greaterThan(expectedCount));
     }
 
