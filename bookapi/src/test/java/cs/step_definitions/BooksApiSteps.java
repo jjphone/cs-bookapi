@@ -6,6 +6,7 @@ import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import cs.utils.ParamHelper;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
@@ -78,8 +80,38 @@ public class BooksApiSteps {
 
     @Then("the response body should contains {string} items to be more than {string}") 
     public void the_response_body_should_contains_items_to_be_more_than(String containPropertyText, String countText) {
-        HashMap<String, String> containProperties = ParamHelper.textToHash(containPropertyText);
-        System.out.println("Contain properties: " + containProperties);
 
+        final boolean MATCH_TO_CONTAIN_PROPERTIES = true;
+        
+        if( containPropertyText == null || containPropertyText.isEmpty() ) {
+            return ;
+        }
+        if( countText == null || countText.isEmpty() ) {
+            return ;
+        }
+        int expectedCount = Integer.parseInt(countText); //expected count number
+
+        List<HashMap<String, String>> matchedItems = ParamHelper.filterResponseJson(response, containPropertyText, MATCH_TO_CONTAIN_PROPERTIES);
+        assertThat(matchedItems.size(), greaterThan(expectedCount));
     }
+
+    @Then("the response body should contains not {string} items to be more than {string}")
+    public void the_response_body_should_not_contains_items_to_be_more_than(String notContainPropertyText, String countText) {
+
+        final boolean MATCH_TO_NOT_CONTAIN_PROPERTIES = false;
+        
+        if( notContainPropertyText == null || notContainPropertyText.isEmpty() ) {
+            return ;
+        }
+        if( countText == null || countText.isEmpty() ) {
+            return ;
+        }
+        int expectedCount = Integer.parseInt(countText); //expected count number
+
+        List<HashMap<String, String>> matchedItems = ParamHelper.filterResponseJson(response, notContainPropertyText, MATCH_TO_NOT_CONTAIN_PROPERTIES);
+        assertThat(matchedItems.size(), greaterThan(expectedCount));
+    }
+
+    
+
 }

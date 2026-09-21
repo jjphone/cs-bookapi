@@ -3,17 +3,17 @@ Feature: Simple Books API
   Scenario Outline: User calls /books GET request, checks response header attributes
 
   # Response header attributes:
-  #   http status code = status,
-  #   http status code = status code,
+  #   - http status code = status,
+  #   - http status code = status code,
 
-  #   response.header.date = date,
-  #   response.header.date = time,
+  #   - response.header.date = date,
+  #   - response.header.date = time,
 
-  #   response.header.content-type = content-type
-  #   response.header.content-type = type,
-  
-  #   response.header.content-length = content-length
-  #   response.header.content-length = size
+  #   - response.header.content-type = content-type
+  #   - response.header.content-type = type,
+
+  #   - response.header.content-length = content-length
+  #   - response.header.content-length = size
 
     Given access to granted to the API
     When GET request is sent to 'http://simple-books-api.glitch.me/books'
@@ -36,17 +36,23 @@ Feature: Simple Books API
 
 
 
-  # Scenario Outline: User calls /books GET request, checks response content
+  Scenario Outline: User calls /books GET request, checks response content
 
-  #   Given access to granted to the API
-  #   When GET request is sent to 'http://simple-books-api.glitch.me/books'
-  #   Then the response body should contains <expected_item_properties> items to be more than <expected_contains_number>
-  #   # Then the response body should contains not <expected_filter_out_item_properties> items to be more than <expected_not_contains_number>
+    Given access to granted to the API
+    When GET request is sent to 'http://simple-books-api.glitch.me/books'
+    Then the response body should contains <expected_item_properties> items to be more than <expected_contains_number>
+    Then the response body should contains not <expected_filter_out_item_properties> items to be more than <expected_not_contains_number>
 
-  #   @smoke
-  #   Examples:
-  #   | test name                               | expected_item_properties  | expected_contains_number  | expected_filter_out_item_properties | expected_not_contains_number |
-  #   | 'Check GET response content -smoke'     | 'id=1, name=The Russian'  | '0'                       | ''                                  | ''                           |
-
+    @smoke
+    Examples:
+    | test name                                                   | expected_item_properties                                                | expected_contains_number  | expected_filter_out_item_properties | expected_not_contains_number |
+    | 'Check GET response book item id=1 exists - smoke'                   | 'id=1, name=The Russian, type={notEmpty}'                               | '0'                       | 'not exits={notEmpty}'              | '0'                          |
     
-    #   response.header.date = time, 
+
+    @regression
+    Examples:
+    | test name                                                                         | expected_item_properties                                                | expected_contains_number  | expected_filter_out_item_properties | expected_not_contains_number |
+    | 'Check GET response book items contains all properties and more than 5 items'     | 'id={notEmpty}, name={notEmpty}, type={notEmpty}, available={notEmpty}' | '5'                       | 'not exits={notEmpty}'              | '0'                          |
+    | 'Check GET response book item id:6 contains all the exact properties'             | 'id=6, name=Viscount Who Loved Me, type=fiction, available=true'        | '0'                       | ''                                  | ''                           |
+    | 'Check GET response book items with availability= true has more than 4 items (5)' | 'available=true'                                                        | '4'                       | ''                                  | ''                           |
+
