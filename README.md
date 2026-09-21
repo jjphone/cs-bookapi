@@ -6,7 +6,7 @@ This repository contains an automated test suite for the [Simple Books API](http
 
 The suite is written in Java using REST Assured and Cucumber, following a BDD approach. It sends a `GET` request to `http://simple-books-api.glitch.me/books` and validates the response.
 
-The feature file ([bookapi/src/test/resources/features/BooksList.feature](bookapi/src/test/resources/features/BooksList.feature)) defines two scenarios:
+The feature file ([bookapi/src/test/resources/features/BooksList.feature](https://github.com/jjphone/cs-bookapi/blob/main/bookapi/src/test/resources/features/BooksList.feature)) defines two scenarios:
 
 
 - Scenario 1: 
@@ -23,7 +23,7 @@ Test the response content JSON data from the GET request. This is achieved by ex
   4. Regression: Check there are more than 4 items that are available (5)  
 
 
-For both scenarios, validations are declared directly in the feature file's example tables rather than hard-coded in Java, so checks can be added or updated there without touching the step definitions. See [bookapi/install.md](bookapi/install.md) for prerequisites, installation, and how to run the tests (including running by `@smoke`/`@regression` tag).
+For both scenarios, validations are declared directly in the feature file's example tables rather than hard-coded in Java, so checks can be added or updated there without touching the step definitions. See [bookapi/install.md](https://github.com/jjphone/cs-bookapi/blob/main/bookapi/install.md) for prerequisites, installation, and how to run the tests (including running by `@smoke`/`@regression` tag).
 
 ## 2) Version Control
 
@@ -31,7 +31,7 @@ The project is version-controlled with Git and hosted on GitHub as the source of
 
 ## 3) CI/CD (Optional)
 
-A GitHub Actions workflow ([.github/workflows/smoke-tests.yml](.github/workflows/smoke-tests.yml)) runs the `@smoke` test suite automatically whenever the `main` branch is updated or a pull request is merged into it, providing a fast regression signal on every change.
+A GitHub Actions workflow ([.github/workflows/smoke-tests.yml](https://github.com/jjphone/cs-bookapi/blob/main/.github/workflows/smoke-tests.yml)) runs the `@smoke` test suite automatically whenever the `main` branch is updated or a pull request is merged into it, providing a fast regression signal on every change.
 
 ![GitHub Actions smoke test run](reference/doc/github_action.png)
 
