@@ -3,6 +3,7 @@ package cs.step_definitions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -32,6 +33,7 @@ public class BooksApiSteps {
     @Given("access to granted to the API")
     public void access_to_granted_to_the_api() {
         RestAssured.baseURI = "http://simple-books-api.glitch.me";
+        RestAssured.filters(new AllureRestAssured());
     }
 
     @When("^GET request is sent to '(.+)'$")
