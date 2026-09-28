@@ -46,3 +46,7 @@ bookapi/                              Maven project
 .github/workflows/                    CI pipeline (smoke tests on main)
 ```
 
+    | 'id=1, name=The Russian, type={notEmpty}'                               | '0' 
+
+
+    
