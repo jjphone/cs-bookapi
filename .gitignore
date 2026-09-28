@@ -33,3 +33,6 @@ replay_pid*
 # Maven build output
 /target/
 **/target/
+
+# allure-maven plugin's cached Allure CLI binary
+**/.allure/
