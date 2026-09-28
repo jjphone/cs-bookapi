@@ -3,6 +3,7 @@ name: Smoke Tests
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   smoke:
@@ -25,9 +26,13 @@ jobs:
       - name: Run @smoke tests
         run: mvn -B test -Dcucumber.filter.tags="@smoke"
 
-      - name: Upload surefire reports
+      - name: Generate Allure report
+        if: always()
+        run: mvn -B allure:report
+
+      - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
-          path: bookapi/target/surefire-reports
+          name: allure-report
+          path: bookapi/target/site/allure-maven-plugin/index.html
