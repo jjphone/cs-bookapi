@@ -16,9 +16,31 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>25</maven.compiler.source>
     <maven.compiler.target>25</maven.compiler.target>
+    <allure.version>2.29.1</allure.version>
+    <junit.platform.version>1.14.2</junit.platform.version>
   </properties>
 
-  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-bom</artifactId>
+        <version>${allure.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- allure-junit-platform pulls an older junit-platform-launcher; pin it to match
+           the junit-platform-engine version brought in by junit-platform-suite, or
+           discovery fails with "OutputDirectoryCreator not available". -->
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-launcher</artifactId>
+        <version>${junit.platform.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
 
     <dependency>
@@ -63,6 +85,27 @@
         <scope>test</scope>
     </dependency>
 
+
+    <!-- Allure reporting: reports Cucumber scenarios/steps and plain JUnit tests run via the JUnit Platform -->
+    <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-cucumber7-jvm</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-junit-platform</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Attaches REST Assured request/response details to the Allure report -->
+    <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-rest-assured</artifactId>
+        <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -73,6 +116,23 @@
         <version>3.5.0</version>
         <configuration>
           <classpathScope>test</classpathScope>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>2.15.2</version>
+        <configuration>
+          <!-- one self-contained index.html instead of an asset tree, so it can be uploaded/downloaded as a single artifact -->
+          <singleFile>true</singleFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
